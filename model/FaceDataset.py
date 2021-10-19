@@ -44,8 +44,10 @@ class FaceDataset(Dataset):
         else:
             label = 0
 
+        # C:/Users/gotam/Desktop/INSA/5IF/datasetBoostraping/tests_36_36\\1_Handshaking_Handshaking_1_158.jpg___(106, 106)___30.033519553072626.jpg'
+
         imageTransform = Image.open(
-            self.root+str(image_name)).convert("RGB")
+            os.path.join(self.root, str(image_name))).convert("RGB")
 
         if self.transform != None:
             imageTransform = self.transform(imageTransform)
@@ -57,7 +59,8 @@ class FaceDataset(Dataset):
 
         if(self.test == True):
             for files in os.listdir(path):
-                dataset.append(files)
+                if os.path.isdir(os.path.join(path, files)) == False:
+                    dataset.append(files)
             return
 
         if(self.face == True):

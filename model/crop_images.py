@@ -11,13 +11,14 @@ sys.path.append(os.getcwd())
 
 IMG_DIR = "C:/Users/gotam/Desktop/INSA/5IF/datasetBoostraping/scenery"
 IMG_SCENERY_DIR = "C:/Users/gotam/Desktop/INSA/5IF/datasetBoostraping/scenery/36_36"
-NEW_SIZE = (432, 432)
+NEW_SIZE = (448, 448)
 
 
 def crop_save_36_36_images_scenery(img_dir, image_size, img_scenery_dir, minBound=Decimal('1.0'), maxBound=Decimal('1.0'), step=10):
     count_total = 0
     for categories in os.listdir(img_dir):
         if os.path.isdir(os.path.join(img_dir, categories)):
+            # case boostraping
             if categories != "36_36":
                 for files in tqdm(os.listdir(img_dir+"/"+categories)):
                     image = Image.open(
@@ -27,13 +28,15 @@ def crop_save_36_36_images_scenery(img_dir, image_size, img_scenery_dir, minBoun
                         '0.1'), minBound=Decimal('1.0'), maxBound=Decimal('1.0'), step=10,  plotBoxes=False, count_total=count_total)
 
         else:
+            # case test
             image = Image.open(img_dir+str("/"+categories)).convert("RGB")
             image = image.resize(image_size)
-            nb_FP = parkour(image, files, img_scenery_dir, scale=Decimal(
-                '0.1'), minBound=minBound, maxBound=maxBound, step=step, plotBoxes=False, count_total=count_total)
+            os.mkdir(os.path.join(img_scenery_dir, categories))
+            nb_FP = parkour(image, categories, img_scenery_dir, scale=Decimal(
+                '0.1'), minBound=minBound, maxBound=maxBound, step=step, plotBoxes=False, count_total=count_total, modeTest=True)
 
 
-def parkour(image, image_name, img_scenery_dir, scale=Decimal('0.1'), minBound=Decimal('1.0'), maxBound=Decimal('1.0'), step=5, plotBoxes=False, count_total=0):
+def parkour(image, image_name, img_scenery_dir, scale=Decimal('0.1'), minBound=Decimal('1.0'), maxBound=Decimal('1.0'), step=5, plotBoxes=False, count_total=0, modeTest=False):
     w, h = image.size
     transiImage = image
     imageCadres = image
@@ -50,10 +53,18 @@ def parkour(image, image_name, img_scenery_dir, scale=Decimal('0.1'), minBound=D
                 transiImage = resizeImage.crop(
                     (width, height, width+TrainImageSize, height+TrainImageSize))
 
-                transiImageCopy = transiImage.copy()
-                transiImageCopy.save(
+                transiCenter = (int((width+(TrainImageSize/2))/float(delta)),
+                                int((height+(TrainImageSize/2))/float(delta)))
+                detectedFaceSize = (h*TrainImageSize)/int(h*delta)
 
-                    img_scenery_dir+"/"+str(image_name)+str(count_total)+str(uniqueCount)+".jpg")
+                transiImageCopy = transiImage.copy()
+                if(modeTest == True):
+                    transiImageCopy.save(
+                        img_scenery_dir+"/"+str(image_name)+"/___"+str(transiCenter)+"___"+str(detectedFaceSize)+".jpg")
+                else:
+                    transiImageCopy.save(
+                        img_scenery_dir+"/"+str(image_name)+"___"+str(transiCenter)+"___"+str(detectedFaceSize)+".jpg")
+
                 count_total += 1
 
         delta += scale
