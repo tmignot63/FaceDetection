@@ -43,6 +43,7 @@ transform_scenery = transforms.Compose([transforms.ToTensor(
 
 
 def train(train_loader, model, optimizer, loss_fn, epoch, writer):
+    """This function trains your system with a given dataset"""
     loop = tqdm(train_loader, leave=True)
     mean_loss = []
 
@@ -65,6 +66,7 @@ def train(train_loader, model, optimizer, loss_fn, epoch, writer):
 
 
 def validation(model, validation_loader, criterion, epoch, writer, scheduler=None):
+    """This function computes the current effeciency of the system"""
     model.eval()
     test_loss = 0
     correct = 0
@@ -90,6 +92,7 @@ def validation(model, validation_loader, criterion, epoch, writer, scheduler=Non
 
 
 def train_val_test(dataset, ratio_val, ratio_test):
+    """This function splits datasets for the system's training"""
     training_size = int(len(dataset)*(1-ratio_val-ratio_test))
     val_size = int(len(dataset)*(ratio_val))
     train_idx, val_idx, test_idx = random_split(dataset, [training_size, val_size, len(
@@ -102,6 +105,7 @@ def train_val_test(dataset, ratio_val, ratio_test):
 
 
 def boostrap_test(net, loader, epoch, thr_fa, writer, maxFp):
+    """This function finds false positives examples and put it in a special folder to improve the system later"""
     net.eval()
     countFP = 0
     softmax = torch.nn.Softmax(dim=1)
@@ -123,6 +127,7 @@ def boostrap_test(net, loader, epoch, thr_fa, writer, maxFp):
 
 
 def creates_data_loader():
+    """This function creates datasets for the system's training"""
     dataset_faces = FaceDataset(
         IMG_DIR, transform=transform_train, face=True)
 
@@ -153,6 +158,7 @@ def main():
         log_dir="logs/VisageClassifier/Boostrapping/Resnet18"+str(EPOCHS) +
         "epochs_lr"+str(LEARNING_RATE))
 
+    """Retrieves an already computed model or computes a new one"""
     if LOAD_MODEL:
         model = torch.load(LOAD_MODEL_FILE).to(DEVICE)
     else:

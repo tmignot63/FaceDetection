@@ -17,14 +17,7 @@ sys.path.append(os.getcwd())
 
 class FaceDataset(Dataset):
     def __init__(self, root, transform=None, face=True, scenery=False, test=False):
-        """[summary]
-
-        Args:
-            root ([type]): [description]
-            machines ([type]): [description]
-            transform ([type], optional): [description]. Defaults to None.
-            open (bool, optional): [description]. Defaults to True.
-        """
+        """This function creates a dataset from pictures"""
         self.root = root
         self.transform = transform
         self.face = face

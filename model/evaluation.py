@@ -32,9 +32,7 @@ PIN_MEMORY = True
 
 
 def evaluate_opti(net_path):
-
-    # TO DO NOT TESTED
-
+    """This function highligths all the faces of the images in a directory"""
     crop_save_36_36_images_scenery(IMG_TEST_DIR, image_size=(448, 448), img_scenery_dir=IMG_36_36_TEST_DIR, minBound=Decimal(
         '0.1'), maxBound=Decimal('1.4'), step=10)
 
@@ -72,6 +70,7 @@ def evaluate_opti(net_path):
                 data, target = data.to(DEVICE), target.to(DEVICE)
                 output = softmax(net(data))
                 for j in range(len(output.data)):
+                    """If the frame has a very probability to contain a face then we process"""
                     if(output.data[j][1] > 0.85):
 
                         img_name_splits = img_name[j].split("___")
@@ -83,10 +82,11 @@ def evaluate_opti(net_path):
                         recognisedFacesCenters.append(transiCenter)
                         recognisedFacesCenterSizes.append(detectedFaceSize)
                         recognisedFacesPercentages.append(output.data[j][1])
-
+            """Once all the most plausible frames are gathered, we select only one by face"""
             bigRectangles = getBigRectangles(
                 recognisedFacesCenters, recognisedFacesPercentages, recognisedFacesCenterSizes)
 
+            """We draw all the final frames"""
             img1 = ImageDraw.Draw(imageCadres)
             for i in range(len(bigRectangles[0])):
                 shape = [bigRectangles[0][i][0]-int(bigRectangles[1][i]/2), bigRectangles[0][i][1]-int(

@@ -37,6 +37,7 @@ def crop_save_36_36_images_scenery(img_dir, image_size, img_scenery_dir, minBoun
 
 
 def parkour(image, image_name, img_scenery_dir, scale=Decimal('0.1'), minBound=Decimal('1.0'), maxBound=Decimal('1.0'), step=5, plotBoxes=False, count_total=0, modeTest=False):
+    """Get trought all the resizes of an image while analysing 36x36 pictures"""
     w, h = image.size
     transiImage = image
     imageCadres = image
@@ -49,7 +50,6 @@ def parkour(image, image_name, img_scenery_dir, scale=Decimal('0.1'), minBound=D
         for height in range(0, (int(h*delta) - TrainImageSize + 1), step):
             for width in range(0, (int(w*delta) - TrainImageSize + 1), step):
                 uniqueCount += 1
-                # print(height,width,TrainImageSize)
                 transiImage = resizeImage.crop(
                     (width, height, width+TrainImageSize, height+TrainImageSize))
 
@@ -68,12 +68,6 @@ def parkour(image, image_name, img_scenery_dir, scale=Decimal('0.1'), minBound=D
                 count_total += 1
 
         delta += scale
-    # if writer != None:
-    #     writer.add_scalar("False alarms", countFP, epoch)
-
-    # if plotBoxes:
-    #     plot_boxes(recognisedFacesCenters, recognisedFacesPercentages,
-    #                recognisedFacesCenterSizes, imageCadres)
     return uniqueCount
 
 

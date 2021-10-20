@@ -3,6 +3,8 @@ import torch.nn as nn
 
 
 class Net(nn.Module):
+    """Former neural network model"""
+
     def __init__(self):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 6, 5)
